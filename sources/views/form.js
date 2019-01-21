@@ -52,6 +52,9 @@ export default class FormView extends JetView {
       if (id){
         view.setValues(contacts.getItem(id));
       }
+      else {
+        view.clear();
+      }
     });
   }
 }

@@ -29,8 +29,15 @@ export default class ContactsView extends JetView {
       },
       onClick: {
         remove: function(e, id) {
-          contacts.remove(id);
-          this.$scope.app.show("/top/contacts");
+          if (this.isSelected(id)){
+            contacts.remove(id);
+            this.select(this.getFirstId());
+          } else {
+            contacts.remove(id);
+          }
+          if (!this.getFirstId()){
+            this.$scope.app.show("/top/contacts");
+          }
         }
       },
       on: {
@@ -62,21 +69,18 @@ export default class ContactsView extends JetView {
     return ui;
   }
   init() {
+    this.$$("list").sync(contacts);
     webix.promise.all([
       contacts.waitData,
-      countries.waitData,
-      statuses.waitData
     ]).then(()=>{
-      this.$$("list").sync(contacts);
       var id = this.getParam("id") || contacts.getFirstId();
-      this.$$("list").select(id);
+      if (this.$$("list").exist(id))
+        this.$$("list").select(id);
     });
   }
   urlChange() {
     webix.promise.all([
       contacts.waitData,
-      countries.waitData,
-      statuses.waitData
     ]).then(()=>{
       var id = this.getParam("id") || contacts.getFirstId();
       this.$$("list").select(id);
