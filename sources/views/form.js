@@ -5,15 +5,16 @@ import { statuses } from "models/statuses";
 
 export default class FormView extends JetView {
   config() {
+    const _ = this.app.getService("locale")._;
     var form = {
       view: "form",
       localId: "form",
       elements: [
-        { view: "text", label: "User Name", name: "Name" },
-        { view: "text", label: "Email", name: "Email" },
+        { view: "text", label: _("User Name"), name: "Name" },
+        { view: "text", label: _("Email"), name: "Email" },
         {
           view: "combo",
-          label: "Country",
+          label: _("Country"),
           name: "Country",
           options: {
             body: { template: "#Name#", data: countries }
@@ -21,7 +22,7 @@ export default class FormView extends JetView {
         },
         {
           view: "combo",
-          label: "Status",
+          label: _("Status"),
           name: "Statuses",
           options: {
             body: { template: "#Name#", data: statuses }
@@ -29,7 +30,7 @@ export default class FormView extends JetView {
         },
         {
           view: "button",
-          value: "Save",
+          value: _("Save"),
           click: () => {
             var form = this.$$("form");
             contacts.updateItem(form.getValues().id, form.getValues());
@@ -42,9 +43,15 @@ export default class FormView extends JetView {
     return form;
   }
   urlChange(view, url) {
-    var id = url[0].params.id;
-    //webix.message(id);
-    console.log(contacts.getItem(id));
-    view.setValues(contacts.getItem(id));
+    webix.promise.all([
+      contacts.waitData,
+      countries.waitData,
+      statuses.waitData
+    ]).then(()=>{
+      var id = url[0].params.id;
+      if (id){
+        view.setValues(contacts.getItem(id));
+      }
+    });
   }
 }

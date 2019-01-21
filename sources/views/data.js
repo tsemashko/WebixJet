@@ -5,13 +5,14 @@ import CommonData from "views/commondata";
 
 export default class DataView extends JetView {
   config() {
+    const _ = this.app.getService("locale")._;
     var header = {
       view: "toolbar",
       css: "webix_dark",
       cols: [
         {
           view: "label",
-          label: "Data",
+          label: _("Data"),
           align: "center"
         }
       ]
@@ -26,8 +27,8 @@ export default class DataView extends JetView {
         }
       },
       data: [
-        {id: "data:countries", value:"Countries"}, 
-        {id: "data:statuses", value:"Statuses"}
+        {id: "data:countries", value:_("Countries")}, 
+        {id: "data:statuses", value:_("Statuses")}
       ],
       gravity: 0.4
     };

@@ -6,16 +6,24 @@ export default class CommonData extends JetView {
     this._tdata = data;
   }
   config() {
+    const _ = this.app.getService("locale")._;
     return {
       rows: [
-        { view: "datatable", editable: true, editaction: "dblclick", autoConfig: true },
+        { localId: "table", view: "datatable", editable: true, editaction: "dblclick", autoConfig: true },
+        {
+          view: "button",
+          value: _("Remove selected"),
+          click: () => {
+            this._tdata.remove(this.$$("table").getSelectedId());
+          }
+        },
         {
           view: "button",
           type: "form",
-          value: "Add new",
+          value: _("Add new"),
 
           click: () => {
-            this.getRoot().queryView("datatable").add({
+            this._tdata.add({
               Name: "Some info",
               Icon: ""
             });
@@ -25,6 +33,6 @@ export default class CommonData extends JetView {
     };
   }
   init(view) {
-    view.queryView("datatable").parse(this._tdata);
+    view.queryView("datatable").sync(this._tdata);
   }
 }
